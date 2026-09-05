@@ -8,7 +8,12 @@ internal static class CommandLineArgumentsParser
     {
         if (args.Length != COMMAND_LINE_ARGUMENTS_COUNT)
         {
-            throw new ArgumentException($"Exactly {COMMAND_LINE_ARGUMENTS_COUNT} command line arguments are required.");
+            throw new ArgumentException($"Exactly {COMMAND_LINE_ARGUMENTS_COUNT} command line arguments are required");
+        }
+
+        if (args.Any(x => string.IsNullOrEmpty(x)))
+        {
+            throw new ArgumentException("Command line arguments can not be empty.");
         }
 
         return new FolderSynchronizerOptions(
