@@ -4,12 +4,33 @@
     {
         internal void Synchronize(string sourceFolder, string replicaFolder)
         {
-            foreach (var sourceFile in Directory.GetFiles(sourceFolder))
-            {
-                var fileName = Path.GetFileName(sourceFile);
-                var replicaFile = Path.Combine(replicaFolder, fileName);
+            SynchronizeDirectoryRecursively(sourceFolder, replicaFolder);
+        }
 
-                File.Copy(sourceFile, replicaFile, overwrite: true);
+        private void SynchronizeDirectoryRecursively(string sourceFolder, string replicaFolder)
+        {
+            Directory.CreateDirectory(replicaFolder);
+
+            foreach (var file in Directory.GetFiles(sourceFolder))
+            {
+                var sourceFileRelativePath = Path.GetRelativePath(sourceFolder, file);
+                var replicaFile = Path.Combine(replicaFolder, sourceFileRelativePath);
+                var replicaFileDirectory = Path.GetDirectoryName(replicaFile);
+
+                if (!Directory.Exists(replicaFileDirectory))
+                {
+                    Directory.CreateDirectory(replicaFileDirectory);
+                }
+
+                File.Copy(file, replicaFile, overwrite: true);
+            }
+
+            foreach (var sourceDirectory in Directory.GetDirectories(sourceFolder))
+            {
+                var directoryName = Path.GetFileName(sourceDirectory);
+                var replicaDirectory = Path.Combine(replicaFolder, directoryName);
+
+                SynchronizeDirectoryRecursively(sourceDirectory, replicaDirectory);
             }
         }
     }
