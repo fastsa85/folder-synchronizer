@@ -9,6 +9,7 @@
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="FolderSynchronizer.UnitTests" />
+		<InternalsVisibleTo Include="FolderSynchronizer.IntegrationTests" />
 	</ItemGroup>
 
 </Project>
