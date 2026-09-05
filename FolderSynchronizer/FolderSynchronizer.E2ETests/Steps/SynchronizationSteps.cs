@@ -1,0 +1,46 @@
+﻿using Reqnroll;
+using System.Diagnostics;
+
+namespace FolderSynchronizer.E2ETests.Steps
+{
+    [Binding]
+    public class SynchronizationSteps
+    {
+        private readonly ScenarioState _scenarioState;
+        private readonly TestSettings _testSettings;
+
+        public SynchronizationSteps(ScenarioState scenarioState, TestSettings testSettings)
+        {
+            _scenarioState = scenarioState ?? throw new ArgumentNullException(nameof(scenarioState));
+            _testSettings = testSettings ?? throw new ArgumentNullException(nameof(testSettings));
+        }
+
+        [When("I run the folder synchronizer")]
+        public void WhenIRunTheFolderSynchronizer()
+        {
+            var logFilePath = Path.Combine(Path.GetTempPath(), $"FolderSynchronizer-E2E-{Guid.NewGuid():N}.log");
+
+            var arguments = $"\"{_testSettings.FolderSynchronizerPath}\" " 
+                + $"\"{_scenarioState.SourceFolder}\" " 
+                + $"\"{_scenarioState.ReplicaFolder}\" " 
+                + $"3 " + $"\"{logFilePath}\"";
+
+            var processStartInfo = new ProcessStartInfo { 
+                FileName = "dotnet",
+                Arguments = arguments,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true };
+
+            using var process = Process.Start(processStartInfo) ?? throw new InvalidOperationException("Failed to start FolderSynchronizer.");
+
+            process.WaitForExit();
+            
+            _scenarioState.ExitCode = process.ExitCode;
+            _scenarioState.StandardOutput = process.StandardOutput.ReadToEnd();
+            _scenarioState.StandardError = process.StandardError.ReadToEnd();
+            _scenarioState.LogFilePath = logFilePath;
+        }
+    }
+}

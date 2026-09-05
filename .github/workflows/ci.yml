@@ -32,3 +32,7 @@ jobs:
         
       - name: Run Integration Test
         run: dotnet test FolderSynchronizer/FolderSynchronizer.IntegrationTests/FolderSynchronizer.IntegrationTests.csproj
+        
+      - name: Run End-to-End Test
+        run: dotnet test FolderSynchronizer/FolderSynchronizer.E2ETests/FolderSynchronizer.E2ETests.csproj
+        
