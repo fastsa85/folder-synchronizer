@@ -147,7 +147,7 @@ namespace FolderSynchronizer.IntegrationTests
                 var currentReplicaFile = Path.Combine(replicaFolder.FullName, currentFileName);
                 File.WriteAllText(currentReplicaFile, currentFileContent);
 
-                // Arrange: create an obsolete file in source and replica (this file should be removed from replica after synchronisation)
+                // Arrange: create an obsolete file in replica only (this file should be removed from replica after synchronisation)
                 var obsoleteFileName = "obsolete.txt";
                 var obsoleteFileContent = "Obsolete file content 123 !@#";
                 var obsoleteReplicaFile = Path.Combine(replicaFolder.FullName, obsoleteFileName);
@@ -157,8 +157,42 @@ namespace FolderSynchronizer.IntegrationTests
                 folderSynchronizerService.Synchronize(sourceFolder.FullName, replicaFolder.FullName);
 
                 // Assert: check the current file still exists in replica folder but the obsolete file has been deleted
-                Assert.That(File.Exists(currentReplicaFile), Is.True);
                 Assert.That(File.Exists(obsoleteReplicaFile), Is.False);
+                Assert.That(File.Exists(currentReplicaFile), Is.True);
+            }
+            finally
+            {
+                sourceFolder.Delete(recursive: true);
+                replicaFolder.Delete(recursive: true);
+            }
+        }
+
+        [Test]
+        public void Synchronize_WhenReplicaNestedFolderContainsObsoleteFile_RemovesFileFromReplica()
+        {
+            var sourceFolder = Directory.CreateTempSubdirectory();
+            var replicaFolder = Directory.CreateTempSubdirectory();
+
+            try
+            {
+                // Arragne: create a nested folder in source and replica
+                var nestedFolderName = "test-subfolder";
+
+                var sourceNestedFolder = Directory.CreateDirectory(Path.Combine(sourceFolder.FullName, nestedFolderName));
+                var replicaNestedFolder = Directory.CreateDirectory(Path.Combine(replicaFolder.FullName, nestedFolderName));
+
+                // Arrange: create an obsolete file in replica nested folder only (this file should be removed from replica after synchronisation)
+                var obsoleteFileName = "obsolete.txt";
+                var obsoleteFileContent = "Obsolete file content 123 !@#";
+                var obsoleteReplicaFile = Path.Combine(replicaNestedFolder.FullName, obsoleteFileName);
+                File.WriteAllText(obsoleteReplicaFile, obsoleteFileContent);
+
+                // Act: run the synchronization
+                folderSynchronizerService.Synchronize(sourceFolder.FullName, replicaFolder.FullName);
+
+                // Assert: check the current file still exists in replica folder but the obsolete file has been deleted
+                Assert.That(File.Exists(obsoleteReplicaFile), Is.False);
+                Assert.That(Directory.Exists(replicaNestedFolder.FullName), Is.True);
             }
             finally
             {
