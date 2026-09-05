@@ -25,6 +25,17 @@
                 File.Copy(file, replicaFile, overwrite: true);
             }
 
+            foreach (var replicaFile in Directory.GetFiles(replicaFolder))
+            {
+                var fileName = Path.GetFileName(replicaFile);
+                var sourceFile = Path.Combine(sourceFolder, fileName);
+
+                if (!File.Exists(sourceFile))
+                {
+                    File.Delete(replicaFile);
+                }
+            }
+
             foreach (var sourceDirectory in Directory.GetDirectories(sourceFolder))
             {
                 var directoryName = Path.GetFileName(sourceDirectory);

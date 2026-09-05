@@ -129,5 +129,42 @@ namespace FolderSynchronizer.IntegrationTests
                 replicaFolder.Delete(recursive: true);
             }
         }
+
+        [Test]
+        public void Synchronize_WhenReplicaContainsObsoleteFile_RemovesFileFromReplica()
+        {
+            var sourceFolder = Directory.CreateTempSubdirectory();
+            var replicaFolder = Directory.CreateTempSubdirectory();
+
+            try
+            {
+                // Arrange: create current file in source and replica (this file should be kept in replica after synchronisation)
+                var currentFileName = "current.txt";
+                var currentFileContent = "Current file content 123 !@#";
+                var sourceFile = Path.Combine(sourceFolder.FullName, currentFileName);
+                File.WriteAllText(sourceFile, currentFileContent);
+
+                var currentReplicaFile = Path.Combine(replicaFolder.FullName, currentFileName);
+                File.WriteAllText(currentReplicaFile, currentFileContent);
+
+                // Arrange: create an obsolete file in source and replica (this file should be removed from replica after synchronisation)
+                var obsoleteFileName = "obsolete.txt";
+                var obsoleteFileContent = "Obsolete file content 123 !@#";
+                var obsoleteReplicaFile = Path.Combine(replicaFolder.FullName, obsoleteFileName);
+                File.WriteAllText(obsoleteReplicaFile, obsoleteFileContent);
+
+                // Act: run the synchronization
+                folderSynchronizerService.Synchronize(sourceFolder.FullName, replicaFolder.FullName);
+
+                // Assert: check the current file still exists in replica folder but the obsolete file has been deleted
+                Assert.That(File.Exists(currentReplicaFile), Is.True);
+                Assert.That(File.Exists(obsoleteReplicaFile), Is.False);
+            }
+            finally
+            {
+                sourceFolder.Delete(recursive: true);
+                replicaFolder.Delete(recursive: true);
+            }
+        }
     }
 }
