@@ -11,7 +11,7 @@ namespace FolderSynchronizer.IntegrationTests
             var fileName = "test.txt";
             var fileContent = "Test content 123 !@#";
 
-            // Arrange
+            // Arrange : create source and replica folders
             var sourceFolder = Directory.CreateTempSubdirectory();
             var replicaFolder = Directory.CreateTempSubdirectory();
 
@@ -22,10 +22,10 @@ namespace FolderSynchronizer.IntegrationTests
 
                 var folderSynchronizerService = new FolderSynchronizationService();
 
-                // Act
+                // Act: run the synchronization
                 folderSynchronizerService.Synchronize(sourceFolder.FullName, replicaFolder.FullName);
 
-                // Assert
+                // Assert: check the file has been copied
                 var replicaFile = Path.Combine(replicaFolder.FullName, fileName);
 
                 Assert.That(File.Exists(replicaFile), Is.True);

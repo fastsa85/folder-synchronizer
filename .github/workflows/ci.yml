@@ -29,3 +29,6 @@ jobs:
         
       - name: Run Unit Test
         run: dotnet test FolderSynchronizer/FolderSynchronizer.UnitTests/FolderSynchronizer.UnitTests.csproj
+        
+      - name: Run Integration Test
+        run: dotnet test FolderSynchronizer/FolderSynchronizer.IntegrationTests/FolderSynchronizer.IntegrationTests.csproj
