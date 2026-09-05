@@ -36,6 +36,17 @@
                 }
             }
 
+            foreach (var replicaDirectory in Directory.GetDirectories(replicaFolder))
+            {
+                var directoryName = Path.GetFileName(replicaDirectory);
+                var sourceDirectory = Path.Combine(sourceFolder, directoryName);
+
+                if (!Directory.Exists(sourceDirectory))
+                {
+                    Directory.Delete(replicaDirectory, recursive: true);
+                }
+            }
+
             foreach (var sourceDirectory in Directory.GetDirectories(sourceFolder))
             {
                 var directoryName = Path.GetFileName(sourceDirectory);
