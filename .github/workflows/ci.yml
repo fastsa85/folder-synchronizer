@@ -26,3 +26,6 @@ jobs:
 
       - name: Build
         run: dotnet build FolderSynchronizer/FolderSynchronizer.sln --no-restore --configuration Release
+        
+      - name: Run Unit Test
+        run: dotnet test FolderSynchronizer/FolderSynchronizer.UnitTests/FolderSynchronizer.UnitTests.csproj
