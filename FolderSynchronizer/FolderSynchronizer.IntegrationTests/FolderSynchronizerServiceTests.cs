@@ -79,5 +79,55 @@ namespace FolderSynchronizer.IntegrationTests
                 replicaFolder.Delete(recursive: true);
             }
         }
+
+        [Test]
+        public void Synchronize_WhenNestedEmptyDirectory_CopiesDirectoryToReplica()
+        {
+            // Arrange: create source and replica folders
+            var sourceFolder = Directory.CreateTempSubdirectory();
+            var replicaFolder = Directory.CreateTempSubdirectory();
+
+            try
+            {
+                var nestedFolderName = "test-subfolder";
+                var nestedFolder = Directory.CreateDirectory(Path.Combine(sourceFolder.FullName, nestedFolderName));
+
+                // Act: run the synchronization
+                folderSynchronizerService.Synchronize(sourceFolder.FullName, replicaFolder.FullName);
+
+                // Assert: check the sub-folder was copied
+                var replicaNestedFolder = Path.Combine(replicaFolder.FullName, nestedFolderName);
+
+                Assert.That(Directory.Exists(replicaNestedFolder), Is.True);
+                Assert.That(Directory.GetFileSystemEntries(nestedFolder.FullName), Is.Empty);
+            }
+            finally
+            {
+                sourceFolder.Delete(recursive: true);
+                replicaFolder.Delete(recursive: true);
+            }
+        }
+
+        [Test]
+        public void Synchronize_WhenSourceDirectoryIsEmpty_DoesNotCopyAnyFilesOrDirectories()
+        {
+            // Arrange: create source and replica folders
+            var sourceFolder = Directory.CreateTempSubdirectory();
+            var replicaFolder = Directory.CreateTempSubdirectory();
+
+            try
+            {
+                // Act: run the synchronization
+                folderSynchronizerService.Synchronize(sourceFolder.FullName, replicaFolder.FullName);
+
+                // Assert: check the directory was copied
+                Assert.That(Directory.GetFileSystemEntries(replicaFolder.FullName), Is.Empty);
+            }
+            finally
+            {
+                sourceFolder.Delete(recursive: true);
+                replicaFolder.Delete(recursive: true);
+            }
+        }
     }
 }
