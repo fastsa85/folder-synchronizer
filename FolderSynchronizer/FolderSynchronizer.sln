@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FolderSynchronizer.UnitTest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FolderSynchronizer.IntegrationTests", "FolderSynchronizer.IntegrationTests\FolderSynchronizer.IntegrationTests.csproj", "{20EEEBFA-91A2-4E9F-AF41-AB9BEC18766C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FolderSynchronizer.E2ETests", "FolderSynchronizer.E2ETests\FolderSynchronizer.E2ETests.csproj", "{EC45F855-B77E-45AE-B2D9-7E392F7C0298}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{20EEEBFA-91A2-4E9F-AF41-AB9BEC18766C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20EEEBFA-91A2-4E9F-AF41-AB9BEC18766C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20EEEBFA-91A2-4E9F-AF41-AB9BEC18766C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC45F855-B77E-45AE-B2D9-7E392F7C0298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC45F855-B77E-45AE-B2D9-7E392F7C0298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC45F855-B77E-45AE-B2D9-7E392F7C0298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC45F855-B77E-45AE-B2D9-7E392F7C0298}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
