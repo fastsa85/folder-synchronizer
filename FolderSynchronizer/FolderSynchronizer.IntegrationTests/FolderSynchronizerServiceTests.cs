@@ -321,5 +321,79 @@ namespace FolderSynchronizer.IntegrationTests
                 replicaFolder.Delete(recursive: true);
             }
         }
+
+        [Test]
+        public void Synchronize_WhenSourceFileWasModified_UpdatesFileInReplica()
+        {
+            var sourceFolder = Directory.CreateTempSubdirectory();
+            var replicaFolder = Directory.CreateTempSubdirectory();
+
+            try
+            {
+                // Arrange: create files with the same name but different content in source and replica folders
+                var fileName = "test.txt";
+
+                var sourceFileContent = "New content 123!@#";
+                var replicaFileContent = "Old content 456!@#";
+
+                var sourceFile = Path.Combine(sourceFolder.FullName, fileName);
+                File.WriteAllText(sourceFile, sourceFileContent);
+
+                var replicaFile = Path.Combine(replicaFolder.FullName, fileName);
+                File.WriteAllText(replicaFile, replicaFileContent);
+
+                // Act: run the synchronization
+                folderSynchronizerService.Synchronize(sourceFolder.FullName, replicaFolder.FullName);
+
+                // Assert: replica file should contain the source file content
+                Assert.That(File.Exists(replicaFile), Is.True);
+                Assert.That(File.ReadAllText(replicaFile), Is.EqualTo(sourceFileContent));
+            }
+            finally
+            {
+                sourceFolder.Delete(recursive: true);
+                replicaFolder.Delete(recursive: true);
+            }
+        }
+
+        [Test]
+        public void Synchronize_WhenSourceNestedFileWasModified_UpdatesFileInReplica()
+        {
+            var sourceFolder = Directory.CreateTempSubdirectory();
+            var replicaFolder = Directory.CreateTempSubdirectory();
+
+            try
+            {
+                // Arrange: create nested directory structure in source and replica
+                var nestedDirectoryName = "test-subfolder";
+
+                var sourceNestedDirectory = Directory.CreateDirectory(Path.Combine(sourceFolder.FullName, nestedDirectoryName));
+                var replicaNestedDirectory = Directory.CreateDirectory(Path.Combine(replicaFolder.FullName, nestedDirectoryName));
+
+                // Arrange: create files with the same name but different content in source and replica nested folders
+                var fileName = "test.txt";
+
+                var sourceFileContent = "New content 123!@#";
+                var replicaFileContent = "Old content 456!@#";
+
+                var sourceFile = Path.Combine(sourceNestedDirectory.FullName, fileName);
+                File.WriteAllText(sourceFile, sourceFileContent);
+
+                var replicaFile = Path.Combine(replicaNestedDirectory.FullName, fileName);
+                File.WriteAllText(replicaFile, replicaFileContent);
+
+                // Act: run the synchronization
+                folderSynchronizerService.Synchronize(sourceFolder.FullName, replicaFolder.FullName);
+
+                // Assert: replica file should contain the source file content
+                Assert.That(File.Exists(replicaFile), Is.True);
+                Assert.That(File.ReadAllText(replicaFile), Is.EqualTo(sourceFileContent));
+            }
+            finally
+            {
+                sourceFolder.Delete(recursive: true);
+                replicaFolder.Delete(recursive: true);
+            }
+        }
     }
 }
