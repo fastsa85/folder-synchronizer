@@ -33,13 +33,9 @@ namespace FolderSynchronizer.E2ETests.Steps
                 UseShellExecute = false,
                 CreateNoWindow = true };
 
-            using var process = Process.Start(processStartInfo) ?? throw new InvalidOperationException("Failed to start FolderSynchronizer.");
+            var process = Process.Start(processStartInfo) ?? throw new InvalidOperationException("Failed to start FolderSynchronizer.");
 
-            process.WaitForExit();
-            
-            _scenarioState.ExitCode = process.ExitCode;
-            _scenarioState.StandardOutput = process.StandardOutput.ReadToEnd();
-            _scenarioState.StandardError = process.StandardError.ReadToEnd();
+            _scenarioState.SynchronizerProcess = process;
             _scenarioState.LogFilePath = logFilePath;
         }
     }

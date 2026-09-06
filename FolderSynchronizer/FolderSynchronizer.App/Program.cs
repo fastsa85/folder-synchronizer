@@ -1,4 +1,7 @@
-﻿namespace FolderSynchronizer.App
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
+namespace FolderSynchronizer.App
 {
     internal class Program
     {
@@ -7,8 +10,15 @@
             try
             {
                 var options = CommandLineArgumentsParser.Parse(args);
-                var synchronizationService = new FolderSynchronizationService();
-                synchronizationService.Synchronize(options.SourceFolder, options.ReplicaFolder);
+
+                var builder = Host.CreateApplicationBuilder();
+
+                builder.Services.AddSingleton(options);
+                builder.Services.AddSingleton<FolderSynchronizationService>();
+                builder.Services.AddHostedService<FolderSynchronizationBackgroundService>();
+
+                using var host = builder.Build();
+                host.Run();
 
                 return 0;
             }

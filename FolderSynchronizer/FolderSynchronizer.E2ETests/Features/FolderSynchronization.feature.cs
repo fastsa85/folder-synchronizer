@@ -109,13 +109,13 @@ namespace FolderSynchronizer.E2ETests.Features
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Copy files from source folder to replica folder")]
-        public async global::System.Threading.Tasks.Task CopyFilesFromSourceFolderToReplicaFolder()
+        [global::NUnit.Framework.DescriptionAttribute("Initial synchronization copies source contents to replica")]
+        public async global::System.Threading.Tasks.Task InitialSynchronizationCopiesSourceContentsToReplica()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Copy files from source folder to replica folder", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Initial synchronization copies source contents to replica", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 3

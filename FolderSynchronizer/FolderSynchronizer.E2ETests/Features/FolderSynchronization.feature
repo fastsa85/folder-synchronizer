@@ -1,6 +1,6 @@
 Feature: Folder synchronization
 
-  Scenario: Copy files from source folder to replica folder
+  Scenario: Initial synchronization copies source contents to replica
     Given a source folder
     And the source folder contains the following files:
       | file            |

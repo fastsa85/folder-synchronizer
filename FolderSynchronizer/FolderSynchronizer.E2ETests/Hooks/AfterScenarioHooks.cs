@@ -21,5 +21,22 @@ namespace FolderSynchronizer.E2ETests.Hooks
                 Directory.Delete(scenarioState.ReplicaFolder, recursive: true);
             }
         }
+
+        [AfterScenario]
+        public void StopSynchronizerProcess(ScenarioState scenarioState)
+        {
+            var process = scenarioState.SynchronizerProcess;
+
+            if (process is null || process.HasExited)
+            {
+                return;
+            }
+
+            process.Kill();
+            process.WaitForExit();
+            process.Dispose();
+
+            scenarioState.SynchronizerProcess = null;
+        }
     }
 }

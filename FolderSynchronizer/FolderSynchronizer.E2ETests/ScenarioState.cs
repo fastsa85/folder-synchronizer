@@ -1,4 +1,6 @@
-﻿namespace FolderSynchronizer.E2ETests
+﻿using System.Diagnostics;
+
+namespace FolderSynchronizer.E2ETests
 {
     public class ScenarioState
     {
@@ -12,5 +14,7 @@
         public string StandardOutput { get; set; } = string.Empty;
 
         public string StandardError { get; set; } = string.Empty;
+
+        public Process SynchronizerProcess { get; set; } = null!;
     }
 }
