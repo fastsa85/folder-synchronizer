@@ -5,9 +5,9 @@ namespace FolderSynchronizer.App
     internal sealed class FolderSynchronizationBackgroundService : BackgroundService
     {
         private readonly FolderSynchronizerOptions _options;
-        private readonly FolderSynchronizationService _synchronizationService;
+        private readonly IFolderSynchronizationService _synchronizationService;
 
-        public FolderSynchronizationBackgroundService(FolderSynchronizerOptions options, FolderSynchronizationService synchronizationService)
+        public FolderSynchronizationBackgroundService(FolderSynchronizerOptions options, IFolderSynchronizationService synchronizationService)
         {
             _options = options;
             _synchronizationService = synchronizationService;
