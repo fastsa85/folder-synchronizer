@@ -142,22 +142,58 @@ namespace FolderSynchronizer.E2ETests.Features
 #line 5
     await testRunner.AndAsync("the source folder contains the following files:", ((string)(null)), table1, "And ");
 #line hidden
+                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                            "folder"});
+                table2.AddRow(new string[] {
+                            "empty-folder"});
+                table2.AddRow(new string[] {
+                            "nested-1/nested-2"});
 #line 10
+    await testRunner.AndAsync("the source folder contains the following folders:", ((string)(null)), table2, "And ");
+#line hidden
+                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                            "file"});
+                table3.AddRow(new string[] {
+                            "E2E-TC-1.txt"});
+                table3.AddRow(new string[] {
+                            "E2E-TC-1.csv"});
+#line 14
+    await testRunner.AndAsync("the folder \"nested-1/nested-2\" in the source contains the following files:", ((string)(null)), table3, "And ");
+#line hidden
+#line 18
     await testRunner.AndAsync("an empty replica folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 11
+#line 19
     await testRunner.WhenAsync("I run the folder synchronizer", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                            "folder"});
+                table4.AddRow(new string[] {
+                            "empty-folder"});
+                table4.AddRow(new string[] {
+                            "nested-1/nested-2"});
+#line 20
+    await testRunner.ThenAsync("the replica folder contains the following folders:", ((string)(null)), table4, "Then ");
+#line hidden
+                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
                             "file"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "E2E-TC-1.txt"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "E2E-TC-1.csv"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "E2E-TC-1.png"});
-#line 12
-    await testRunner.ThenAsync("the source folder contains the following files:", ((string)(null)), table2, "Then ");
+#line 24
+    await testRunner.AndAsync("the replica folder contains the following files:", ((string)(null)), table5, "And ");
+#line hidden
+                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
+                            "file"});
+                table6.AddRow(new string[] {
+                            "E2E-TC-1.txt"});
+                table6.AddRow(new string[] {
+                            "E2E-TC-1.csv"});
+#line 29
+    await testRunner.AndAsync("the folder \"nested-1/nested-2\" in the replica contains the following files:", ((string)(null)), table6, "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

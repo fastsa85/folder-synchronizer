@@ -1,0 +1,65 @@
+﻿using Reqnroll;
+
+namespace FolderSynchronizer.E2ETests.Steps
+{
+    [Binding]
+    public class ReplicaFolderSteps
+    {
+        private readonly ScenarioState _scenarioState;
+
+        public ReplicaFolderSteps(ScenarioState scenarioState)
+        {
+            _scenarioState = scenarioState ?? throw new ArgumentNullException(nameof(scenarioState));
+        }
+
+        [Given("an empty replica folder")]
+        public void GivenAnEmptyReplicaFolder()
+        {
+            var replicaFolder = Directory.CreateTempSubdirectory("FolderSynchronizer-E2E-Replica-");
+            _scenarioState.ReplicaFolder = replicaFolder.FullName;
+        }
+
+        [Then("the replica folder contains the following files:")]
+        public void ThenTheSourceFolderContainsTheFollowingFiles(DataTable dataTable)
+        {
+            foreach (var row in dataTable.Rows)
+            {
+                var relativeFilePath = row["file"];
+
+                var filePath = Path.Combine(_scenarioState.ReplicaFolder, relativeFilePath);
+
+                Assert.That(File.Exists(filePath), Is.True, $"Expected file was not found in replica folder: {relativeFilePath}");
+            }
+        }
+
+        [Then("the replica folder contains the following folders:")]
+        public void ThenTheReplicaFolderContainsTheFollowingFolders(DataTable dataTable)
+        {
+            foreach (var row in dataTable.Rows)
+            {
+                var relativeFolderPath = row["folder"];
+
+                var folderPath = Path.Combine(_scenarioState.ReplicaFolder, relativeFolderPath);
+
+                Assert.That(Directory.Exists(folderPath), Is.True, $"Expected folder was not found in replica: {relativeFolderPath}");
+            }
+        }
+
+        [Then("the folder {string} in the replica contains the following files:")]
+        public void ThenTheFolderInTheReplicaContainsTheFollowingFiles(string relativeFolderPath, DataTable dataTable)
+        {
+            var replicaFolder = Path.Combine(_scenarioState.ReplicaFolder, relativeFolderPath);
+
+            Assert.That(Directory.Exists(replicaFolder), Is.True, $"Expected replica folder was not found: {relativeFolderPath}");
+
+            foreach (var row in dataTable.Rows)
+            {
+                var fileName = row["file"];
+
+                var filePath = Path.Combine(replicaFolder, fileName);
+
+                Assert.That(File.Exists(filePath), Is.True, $"Expected file was not found in replica folder '{relativeFolderPath}': {fileName}");
+            }
+        }
+    }
+}

@@ -3,12 +3,12 @@
 namespace FolderSynchronizer.E2ETests.Steps
 {
     [Binding]
-    public class FolderSteps
+    public class SourceFolderSteps
     {
         private const string TestAssetsFolder = "TestAssets";
         private readonly ScenarioState _scenarioState;
 
-        public FolderSteps(ScenarioState scenarioState)
+        public SourceFolderSteps(ScenarioState scenarioState)
         {
             _scenarioState = scenarioState ?? throw new ArgumentNullException(nameof(scenarioState));
         }
@@ -40,23 +40,38 @@ namespace FolderSynchronizer.E2ETests.Steps
             }
         }
 
-        [Given("an empty replica folder")]
-        public void GivenAnEmptyReplicaFolder()
-        {
-            var replicaFolder = Directory.CreateTempSubdirectory("FolderSynchronizer-E2E-Replica-");
-            _scenarioState.ReplicaFolder = replicaFolder.FullName;
-        }
-
-        [Then("the source folder contains the following files:")]
-        public void ThenTheSourceFolderContainsTheFollowingFiles(DataTable dataTable)
+        [Given("the source folder contains the following folders:")]
+        public void GivenTheSourceFolderContainsTheFollowingFolders(DataTable dataTable)
         {
             foreach (var row in dataTable.Rows)
             {
-                var relativeFilePath = row["file"];
+                var relativeFolderPath = row["folder"];
 
-                var filePath = Path.Combine(_scenarioState.SourceFolder, relativeFilePath);
+                var folderPath = Path.Combine(_scenarioState.SourceFolder, relativeFolderPath);
 
-                Assert.That(File.Exists(filePath), Is.True, $"Expected file was not found in source folder: {relativeFilePath}");
+                Directory.CreateDirectory(folderPath);
+            }
+        }
+
+        [Given("the folder {string} in the source contains the following files:")]
+        public void GivenTheFolderInTheSourceContainsTheFollowingFiles(string relativeFolderPath, DataTable dataTable)
+        {
+            var destinationFolder = Path.Combine(_scenarioState.SourceFolder, relativeFolderPath);
+
+            foreach (var row in dataTable.Rows)
+            {
+                var fileName = row["file"];
+
+                var assetPath = Path.Combine(AppContext.BaseDirectory, TestAssetsFolder, fileName);
+
+                if (!File.Exists(assetPath))
+                {
+                    throw new FileNotFoundException( $"Test asset not found: {assetPath}");
+                }
+
+                var destinationPath = Path.Combine(destinationFolder, fileName);
+
+                File.Copy(assetPath, destinationPath);
             }
         }
     }
