@@ -34,6 +34,19 @@ namespace FolderSynchronizer.E2ETests.Steps
             }
         }
 
+        [Then("the replica folder does not contain the following files:")]
+        public void ThenTheReplicaFolderDoesNotContainTheFollowingFiles(DataTable dataTable)
+        {
+            foreach (var row in dataTable.Rows)
+            {
+                var relativeFilePath = row["file"];
+
+                var filePath = Path.Combine(_scenarioState.ReplicaFolder, relativeFilePath);
+
+                Assert.That(WaitForFile(filePath, WaitTimeOut), Is.False, $"Unexpected file was found in replica folder: {relativeFilePath}");
+            }
+        }
+
         [Then("the replica folder contains the following folders:")]
         public void ThenTheReplicaFolderContainsTheFollowingFolders(DataTable dataTable)
         {
