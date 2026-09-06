@@ -1,8 +1,8 @@
 ﻿namespace FolderSynchronizer.App
 {
-    internal class FolderSynchronizationService
+    public class FolderSynchronizationService : IFolderSynchronizationService
     {
-        internal void Synchronize(string sourceFolder, string replicaFolder)
+        public void Synchronize(string sourceFolder, string replicaFolder)
         {
             SynchronizeDirectoryRecursively(sourceFolder, replicaFolder);
         }

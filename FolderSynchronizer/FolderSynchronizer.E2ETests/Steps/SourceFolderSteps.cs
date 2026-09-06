@@ -74,5 +74,21 @@ namespace FolderSynchronizer.E2ETests.Steps
                 File.Copy(assetPath, destinationPath);
             }
         }
+
+        [When("I rename the following files in the source folder:")]
+        public void WhenIRenameTheFollowingFilesInTheSourceFolder(DataTable dataTable)
+        {
+            foreach (var row in dataTable.Rows)
+            {
+                var originalFileName = row["original"];
+                var newFileName = row["new"];
+
+                var originalFilePath = Path.Combine(_scenarioState.SourceFolder, originalFileName);
+
+                var newFilePath = Path.Combine(_scenarioState.SourceFolder, newFileName);
+
+                File.Move(originalFilePath, newFilePath);
+            }
+        }
     }
 }

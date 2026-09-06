@@ -1,10 +1,12 @@
 ﻿using Reqnroll;
+using System.Diagnostics;
 
 namespace FolderSynchronizer.E2ETests.Steps
 {
     [Binding]
     public class ReplicaFolderSteps
     {
+        private TimeSpan WaitTimeOut => TimeSpan.FromSeconds(3); // seconds
         private readonly ScenarioState _scenarioState;
 
         public ReplicaFolderSteps(ScenarioState scenarioState)
@@ -28,7 +30,20 @@ namespace FolderSynchronizer.E2ETests.Steps
 
                 var filePath = Path.Combine(_scenarioState.ReplicaFolder, relativeFilePath);
 
-                Assert.That(File.Exists(filePath), Is.True, $"Expected file was not found in replica folder: {relativeFilePath}");
+                Assert.That(WaitForFile(filePath, WaitTimeOut), Is.True, $"Expected file was not found in replica folder: {relativeFilePath}");
+            }
+        }
+
+        [Then("the replica folder does not contain the following files:")]
+        public void ThenTheReplicaFolderDoesNotContainTheFollowingFiles(DataTable dataTable)
+        {
+            foreach (var row in dataTable.Rows)
+            {
+                var relativeFilePath = row["file"];
+
+                var filePath = Path.Combine(_scenarioState.ReplicaFolder, relativeFilePath);
+
+                Assert.That(WaitForFile(filePath, WaitTimeOut), Is.False, $"Unexpected file was found in replica folder: {relativeFilePath}");
             }
         }
 
@@ -41,7 +56,7 @@ namespace FolderSynchronizer.E2ETests.Steps
 
                 var folderPath = Path.Combine(_scenarioState.ReplicaFolder, relativeFolderPath);
 
-                Assert.That(Directory.Exists(folderPath), Is.True, $"Expected folder was not found in replica: {relativeFolderPath}");
+                Assert.That(WaitForDirectory(folderPath, WaitTimeOut), Is.True, $"Expected folder was not found in replica: {relativeFolderPath}");
             }
         }
 
@@ -58,8 +73,42 @@ namespace FolderSynchronizer.E2ETests.Steps
 
                 var filePath = Path.Combine(replicaFolder, fileName);
 
-                Assert.That(File.Exists(filePath), Is.True, $"Expected file was not found in replica folder '{relativeFolderPath}': {fileName}");
+                Assert.That(WaitForFile(filePath, WaitTimeOut), Is.True, $"Expected file was not found in replica folder '{relativeFolderPath}': {fileName}");
             }
+        }
+
+        private bool WaitForFile(string filePath, TimeSpan timeout)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                if (File.Exists(filePath))
+                {
+                    return true;
+                }
+
+                Thread.Sleep(100);
+            }
+
+            return false;
+        }
+
+        private bool WaitForDirectory(string directory, TimeSpan timeout)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                if (Directory.Exists(directory))
+                {
+                    return true;
+                }
+
+                Thread.Sleep(100);
+            }
+
+            return false;
         }
     }
 }
