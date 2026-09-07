@@ -8,24 +8,45 @@ namespace FolderSynchronizer.E2ETests.Hooks
     [Binding]
     internal class AfterScenarioHooks
     {
-        [AfterScenario]
-        public void CleanupTempDirectories(ScenarioState scenarioState)
-        {
-            if (!string.IsNullOrEmpty(scenarioState.SourceFolder) && Directory.Exists(scenarioState.SourceFolder))
-            {
-                Directory.Delete(scenarioState.SourceFolder, recursive: true);
-            }
+        private readonly ScenarioState _scenarioState;
 
-            if (!string.IsNullOrEmpty(scenarioState.ReplicaFolder) &&  Directory.Exists(scenarioState.ReplicaFolder))
-            {
-                Directory.Delete(scenarioState.ReplicaFolder, recursive: true);
-            }
+        public AfterScenarioHooks(ScenarioState scenarioState)
+        {
+            _scenarioState = scenarioState ?? throw new ArgumentNullException(nameof(scenarioState));
         }
 
         [AfterScenario]
-        public void StopSynchronizerProcess(ScenarioState scenarioState)
+        public void Cleanup()
         {
-            var process = scenarioState.SynchronizerProcess;
+            StopSynchronizerProcess();
+            CleanupTempDirectories();
+            CleanupLogFile();
+        }
+
+        private void CleanupTempDirectories()
+        {
+            if (!string.IsNullOrEmpty(_scenarioState.SourceFolder) && Directory.Exists(_scenarioState.SourceFolder))
+            {
+                Directory.Delete(_scenarioState.SourceFolder, recursive: true);
+            }
+
+            if (!string.IsNullOrEmpty(_scenarioState.ReplicaFolder) &&  Directory.Exists(_scenarioState.ReplicaFolder))
+            {
+                Directory.Delete(_scenarioState.ReplicaFolder, recursive: true);
+            }
+        }
+
+        private void CleanupLogFile()
+        {
+            if (!string.IsNullOrEmpty(_scenarioState.LogFilePath) && File.Exists(_scenarioState.LogFilePath))
+            {
+                File.Delete(_scenarioState.LogFilePath);
+            }
+        }
+
+        private void StopSynchronizerProcess()
+        {
+            var process = _scenarioState.SynchronizerProcess;
 
             if (process is null || process.HasExited)
             {
@@ -36,7 +57,7 @@ namespace FolderSynchronizer.E2ETests.Hooks
             process.WaitForExit();
             process.Dispose();
 
-            scenarioState.SynchronizerProcess = null;
+            _scenarioState.SynchronizerProcess = null;
         }
     }
 }
