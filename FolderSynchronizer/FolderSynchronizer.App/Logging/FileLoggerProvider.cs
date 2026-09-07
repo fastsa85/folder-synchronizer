@@ -29,6 +29,7 @@ namespace FolderSynchronizer.App.Logging
 
         public void Dispose()
         {
+            _writer.Dispose();
         }
     }
 }
