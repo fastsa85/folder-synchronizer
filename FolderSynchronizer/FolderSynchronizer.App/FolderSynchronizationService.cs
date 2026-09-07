@@ -1,7 +1,16 @@
-﻿namespace FolderSynchronizer.App
+﻿using Microsoft.Extensions.Logging;
+
+namespace FolderSynchronizer.App
 {
     public class FolderSynchronizationService : IFolderSynchronizationService
     {
+        private readonly ILogger<FolderSynchronizationService> _logger;
+
+        public FolderSynchronizationService(ILogger<FolderSynchronizationService> logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
         public void Synchronize(string sourceFolder, string replicaFolder)
         {
             SynchronizeDirectoryRecursively(sourceFolder, replicaFolder);
@@ -23,6 +32,7 @@
                 }
 
                 File.Copy(file, replicaFile, overwrite: true);
+                _logger.LogInformation("Copied file from source: {sourceFile} to replica: {replicaFile}", file, replicaFile);
             }
 
             foreach (var replicaFile in Directory.GetFiles(replicaFolder))
@@ -33,6 +43,7 @@
                 if (!File.Exists(sourceFile))
                 {
                     File.Delete(replicaFile);
+                    _logger.LogInformation("Removed obsolete file in replica folder: {replicaFile}", replicaFile);
                 }
             }
 
@@ -44,6 +55,7 @@
                 if (!Directory.Exists(sourceDirectory))
                 {
                     Directory.Delete(replicaDirectory, recursive: true);
+                    _logger.LogInformation("Removed obsolete directory in replica folder: {replicaDirectory}", replicaDirectory);
                 }
             }
 
