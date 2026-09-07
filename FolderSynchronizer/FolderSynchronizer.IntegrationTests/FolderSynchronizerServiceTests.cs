@@ -1,5 +1,7 @@
 ﻿using FolderSynchronizer.App;
+using Moq;
 using NUnit.Framework.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace FolderSynchronizer.IntegrationTests
 {
@@ -7,11 +9,13 @@ namespace FolderSynchronizer.IntegrationTests
     public class FolderSynchronizerServiceTests
     {
         private FolderSynchronizationService folderSynchronizerService;
+        private Mock<ILogger<FolderSynchronizationService>> loggerMock;
 
         [SetUp]
         public void Setup()
         {
-            folderSynchronizerService = new FolderSynchronizationService();
+            loggerMock = new Mock<ILogger<FolderSynchronizationService>>();
+            folderSynchronizerService = new FolderSynchronizationService(loggerMock.Object);
         }
 
         [Test]

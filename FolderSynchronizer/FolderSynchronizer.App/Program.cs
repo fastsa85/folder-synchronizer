@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FolderSynchronizer.App.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace FolderSynchronizer.App
 {
@@ -16,6 +18,7 @@ namespace FolderSynchronizer.App
                 builder.Services.AddSingleton(options);
                 builder.Services.AddSingleton<IFolderSynchronizationService, FolderSynchronizationService>();
                 builder.Services.AddHostedService<FolderSynchronizationBackgroundService>();
+                builder.Logging.AddProvider(new FileLoggerProvider(options.LogFilePath));
 
                 using var host = builder.Build();
                 host.Run();

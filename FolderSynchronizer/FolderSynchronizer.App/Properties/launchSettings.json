@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FolderSynchronizer.App": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\FolderSyncTest\\SyncSource\" \"C:\\FolderSyncTest\\SyncReplica\" 6 \"C:\\FolderSyncTest\\folder-sync.log\""
+    }
+  }
+}

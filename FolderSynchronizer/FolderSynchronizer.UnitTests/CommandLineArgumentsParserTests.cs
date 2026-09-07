@@ -3,7 +3,7 @@
 namespace FolderSynchronizer.UnitTests
 {
     [TestFixture]
-    public class Tests
+    public class CommandLineArgumentsParserTests
     {
         [Test]
         public void Parse_WithValidArguments_ReturnsOptions()

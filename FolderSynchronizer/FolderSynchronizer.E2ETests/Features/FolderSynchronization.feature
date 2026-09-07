@@ -30,6 +30,7 @@ Feature: Folder synchronization
 		| file         |
 		| E2E-TC-1.txt |
 		| E2E-TC-1.csv |
+	And the log file is generated and is not empty
 
 Scenario: Synchronization should be performed periodically
      Given a source folder
@@ -51,3 +52,4 @@ Scenario: Synchronization should be performed periodically
      And the replica folder does not contain the following files:
         | file         |
         | E2E-TC-1.txt |
+    And the log file is generated and is not empty

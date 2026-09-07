@@ -195,6 +195,9 @@ namespace FolderSynchronizer.E2ETests.Features
 #line 29
     await testRunner.AndAsync("the folder \"nested-1/nested-2\" in the replica contains the following files:", ((string)(null)), table6, "And ");
 #line hidden
+#line 33
+ await testRunner.AndAsync("the log file is generated and is not empty", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
             }
             await this.ScenarioCleanupAsync();
         }
@@ -209,7 +212,7 @@ namespace FolderSynchronizer.E2ETests.Features
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Synchronization should be performed periodically", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 34
+#line 35
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -219,27 +222,27 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 35
+#line 36
      await testRunner.GivenAsync("a source folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
                 global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
                             "file"});
                 table7.AddRow(new string[] {
                             "E2E-TC-1.txt"});
-#line 36
+#line 37
      await testRunner.AndAsync("the source folder contains the following files:", ((string)(null)), table7, "And ");
 #line hidden
-#line 39
+#line 40
      await testRunner.AndAsync("an empty replica folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 40
+#line 41
      await testRunner.WhenAsync("I run the folder synchronizer with sync interval 3 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
                 global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
                             "file"});
                 table8.AddRow(new string[] {
                             "E2E-TC-1.txt"});
-#line 41
+#line 42
      await testRunner.ThenAsync("the replica folder contains the following files:", ((string)(null)), table8, "Then ");
 #line hidden
                 global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
@@ -248,25 +251,28 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
                 table9.AddRow(new string[] {
                             "E2E-TC-1.txt",
                             "E2E-TC-1-UPDATED.txt"});
-#line 44
+#line 45
      await testRunner.WhenAsync("I rename the following files in the source folder:", ((string)(null)), table9, "When ");
 #line hidden
-#line 47
+#line 48
      await testRunner.AndAsync("I wait 3 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
                 global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
                             "file"});
                 table10.AddRow(new string[] {
                             "E2E-TC-1-UPDATED.txt"});
-#line 48
+#line 49
      await testRunner.ThenAsync("the replica folder contains the following files:", ((string)(null)), table10, "Then ");
 #line hidden
                 global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
                             "file"});
                 table11.AddRow(new string[] {
                             "E2E-TC-1.txt"});
-#line 51
+#line 52
      await testRunner.AndAsync("the replica folder does not contain the following files:", ((string)(null)), table11, "And ");
+#line hidden
+#line 55
+    await testRunner.AndAsync("the log file is generated and is not empty", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
