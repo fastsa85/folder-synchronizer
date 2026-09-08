@@ -18,12 +18,52 @@ namespace FolderSynchronizer.App
 
         private void SynchronizeDirectoryRecursively(string sourceFolder, string replicaFolder)
         {
-            if (!Directory.Exists(replicaFolder))
-            {
-                Directory.CreateDirectory(replicaFolder);
-                _logger.LogInformation("Created directory in replica folder: {replicaFolder}", replicaFolder);
-            }           
+            EnsureReplcaFolderExists(replicaFolder);
+            SyncronizeFiles(sourceFolder, replicaFolder);
+            RemoveObsoleteFilesFromReplica(sourceFolder, replicaFolder);
+            RemoveObsoleteFoldersFromReplica(sourceFolder, replicaFolder);
 
+            foreach (var sourceDirectory in Directory.GetDirectories(sourceFolder))
+            {
+                var directoryName = Path.GetFileName(sourceDirectory);
+                var replicaDirectory = Path.Combine(replicaFolder, directoryName);
+
+                SynchronizeDirectoryRecursively(sourceDirectory, replicaDirectory);
+            }
+        }
+
+        private void RemoveObsoleteFoldersFromReplica(string sourceFolder, string replicaFolder)
+        {
+            foreach (var replicaDirectory in Directory.GetDirectories(replicaFolder))
+            {
+                var directoryName = Path.GetFileName(replicaDirectory);
+                var sourceDirectory = Path.Combine(sourceFolder, directoryName);
+
+                if (!Directory.Exists(sourceDirectory))
+                {
+                    Directory.Delete(replicaDirectory, recursive: true);
+                    _logger.LogInformation("Removed obsolete directory in replica folder: {replicaDirectory}", replicaDirectory);
+                }
+            }
+        }
+
+        private void RemoveObsoleteFilesFromReplica(string sourceFolder, string replicaFolder)
+        {
+            foreach (var replicaFile in Directory.GetFiles(replicaFolder))
+            {
+                var fileName = Path.GetFileName(replicaFile);
+                var sourceFile = Path.Combine(sourceFolder, fileName);
+
+                if (!File.Exists(sourceFile))
+                {
+                    File.Delete(replicaFile);
+                    _logger.LogInformation("Removed obsolete file in replica folder: {replicaFile}", replicaFile);
+                }
+            }
+        }
+
+        private void SyncronizeFiles(string sourceFolder, string replicaFolder)
+        {
             foreach (var file in Directory.GetFiles(sourceFolder))
             {
                 var sourceFileRelativePath = Path.GetRelativePath(sourceFolder, file);
@@ -49,37 +89,14 @@ namespace FolderSynchronizer.App
                         replicaFile);
                 }
             }
+        }
 
-            foreach (var replicaFile in Directory.GetFiles(replicaFolder))
+        private void EnsureReplcaFolderExists(string replicaFolder)
+        {
+            if (!Directory.Exists(replicaFolder))
             {
-                var fileName = Path.GetFileName(replicaFile);
-                var sourceFile = Path.Combine(sourceFolder, fileName);
-
-                if (!File.Exists(sourceFile))
-                {
-                    File.Delete(replicaFile);
-                    _logger.LogInformation("Removed obsolete file in replica folder: {replicaFile}", replicaFile);
-                }
-            }
-
-            foreach (var replicaDirectory in Directory.GetDirectories(replicaFolder))
-            {
-                var directoryName = Path.GetFileName(replicaDirectory);
-                var sourceDirectory = Path.Combine(sourceFolder, directoryName);
-
-                if (!Directory.Exists(sourceDirectory))
-                {
-                    Directory.Delete(replicaDirectory, recursive: true);
-                    _logger.LogInformation("Removed obsolete directory in replica folder: {replicaDirectory}", replicaDirectory);
-                }
-            }
-
-            foreach (var sourceDirectory in Directory.GetDirectories(sourceFolder))
-            {
-                var directoryName = Path.GetFileName(sourceDirectory);
-                var replicaDirectory = Path.Combine(replicaFolder, directoryName);
-
-                SynchronizeDirectoryRecursively(sourceDirectory, replicaDirectory);
+                Directory.CreateDirectory(replicaFolder);
+                _logger.LogInformation("Created directory in replica folder: {replicaFolder}", replicaFolder);
             }
         }
 
