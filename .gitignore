@@ -58,3 +58,6 @@ nunit-*.xml
 
 # Visual Studio
 .vs/
+
+# Reqnroll/Specflow
+*.feature.cs
