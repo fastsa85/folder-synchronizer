@@ -4,8 +4,7 @@ namespace FolderSynchronizer.E2ETests.Steps
 {
     [Binding]
     public class SourceFolderSteps
-    {
-        private const string TestAssetsFolder = "TestAssets";
+    {        
         private readonly ScenarioState _scenarioState;
 
         public SourceFolderSteps(ScenarioState scenarioState)
@@ -27,7 +26,7 @@ namespace FolderSynchronizer.E2ETests.Steps
             {
                 var assetFileName = row["file"];
 
-                var assetPath = Path.Combine(AppContext.BaseDirectory, TestAssetsFolder, assetFileName);
+                var assetPath = Path.Combine(AppContext.BaseDirectory, _scenarioState.TestAssetsFolder, assetFileName);
 
                 if (!File.Exists(assetPath))
                 {
@@ -53,6 +52,19 @@ namespace FolderSynchronizer.E2ETests.Steps
             }
         }
 
+        [Given("the replica folder contains the following folders:")]
+        public void GivenTheReplicaFolderContainsTheFollowingFolders(DataTable dataTable)
+        {
+            foreach (var row in dataTable.Rows)
+            {
+                var relativeFolderPath = row["folder"];
+
+                var folderPath = Path.Combine(_scenarioState.ReplicaFolder, relativeFolderPath);
+
+                Directory.CreateDirectory(folderPath);
+            }
+        }
+
         [Given("the folder {string} in the source contains the following files:")]
         public void GivenTheFolderInTheSourceContainsTheFollowingFiles(string relativeFolderPath, DataTable dataTable)
         {
@@ -62,7 +74,7 @@ namespace FolderSynchronizer.E2ETests.Steps
             {
                 var fileName = row["file"];
 
-                var assetPath = Path.Combine(AppContext.BaseDirectory, TestAssetsFolder, fileName);
+                var assetPath = Path.Combine(AppContext.BaseDirectory, _scenarioState.TestAssetsFolder, fileName);
 
                 if (!File.Exists(assetPath))
                 {

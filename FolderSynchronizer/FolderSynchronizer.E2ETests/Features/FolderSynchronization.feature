@@ -32,6 +32,31 @@ Feature: Folder synchronization
 		| E2E-TC-1.csv |
 	And the log file is generated and is not empty
 
+Scenario: Obsolete files and folders are removed from replica
+    Given a source folder
+    And the source folder contains the following files:
+        | file         |
+        | E2E-TC-1.txt |
+    And an empty replica folder
+    And the replica folder contains the following files:
+        | file              |
+        | obsolete-file.txt |
+    And the replica folder contains the following folders:
+        | folder                    |
+        | obsolete-folder           |
+        | obsolete-folder/nested    |
+    When I run the folder synchronizer
+    Then the replica folder contains the following files:
+        | file         |
+        | E2E-TC-1.txt |
+    And the replica folder does not contain the following files:
+        | file              |
+        | obsolete-file.txt |
+    And the replica folder does not contain the following folders:
+        | folder          |
+        | obsolete-folder |
+    And the log file is generated and is not empty
+
 Scenario: Synchronization should be performed periodically
      Given a source folder
      And the source folder contains the following files:
