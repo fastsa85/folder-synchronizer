@@ -102,5 +102,19 @@ namespace FolderSynchronizer.E2ETests.Steps
                 File.Move(originalFilePath, newFilePath);
             }
         }
+
+        [When("I change the content of the following file in the source folder:")]
+        public void WhenIChangeTheContentOfTheFollowingFileInTheSourceFolder(DataTable dataTable)
+        {
+            foreach (var row in dataTable.Rows)
+            {
+                var fileName = row["file"];
+                var newContent = row["New file content"];
+
+                var filePath = Path.Combine(_scenarioState.SourceFolder, fileName);
+
+                File.WriteAllText(filePath, newContent);
+            }
+        }
     }
 }

@@ -105,7 +105,7 @@ namespace FolderSynchronizer.E2ETests.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/FolderSynchronization.feature.ndjson", 5);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/FolderSynchronization.feature.ndjson", 6);
         }
         
         [global::NUnit.Framework.TestAttribute()]
@@ -203,13 +203,13 @@ namespace FolderSynchronizer.E2ETests.Features
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Obsolete files and folders are removed from replica")]
-        public async global::System.Threading.Tasks.Task ObsoleteFilesAndFoldersAreRemovedFromReplica()
+        [global::NUnit.Framework.DescriptionAttribute("Synchronization should be performed periodically")]
+        public async global::System.Threading.Tasks.Task SynchronizationShouldBePerformedPeriodically()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Obsolete files and folders are removed from replica", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Synchronization should be performed periodically", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 35
@@ -223,59 +223,55 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             {
                 await this.ScenarioStartAsync();
 #line 36
-    await testRunner.GivenAsync("a source folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+     await testRunner.GivenAsync("a source folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
                 global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
                             "file"});
                 table7.AddRow(new string[] {
                             "E2E-TC-1.txt"});
 #line 37
-    await testRunner.AndAsync("the source folder contains the following files:", ((string)(null)), table7, "And ");
+     await testRunner.AndAsync("the source folder contains the following files:", ((string)(null)), table7, "And ");
 #line hidden
 #line 40
-    await testRunner.AndAsync("an empty replica folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+     await testRunner.AndAsync("an empty replica folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 41
+     await testRunner.WhenAsync("I run the folder synchronizer with sync interval 3 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
                 global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
                             "file"});
                 table8.AddRow(new string[] {
-                            "obsolete-file.txt"});
-#line 41
-    await testRunner.AndAsync("the replica folder contains the following files:", ((string)(null)), table8, "And ");
+                            "E2E-TC-1.txt"});
+#line 42
+     await testRunner.ThenAsync("the replica folder contains the following files:", ((string)(null)), table8, "Then ");
 #line hidden
                 global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
-                            "folder"});
+                            "original",
+                            "new"});
                 table9.AddRow(new string[] {
-                            "obsolete-folder"});
-                table9.AddRow(new string[] {
-                            "obsolete-folder/nested"});
-#line 44
-    await testRunner.AndAsync("the replica folder contains the following folders:", ((string)(null)), table9, "And ");
+                            "E2E-TC-1.txt",
+                            "E2E-TC-1-UPDATED.txt"});
+#line 45
+     await testRunner.WhenAsync("I rename the following files in the source folder:", ((string)(null)), table9, "When ");
 #line hidden
 #line 48
-    await testRunner.WhenAsync("I run the folder synchronizer", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+     await testRunner.AndAsync("I wait 3 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
                 global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
                             "file"});
                 table10.AddRow(new string[] {
-                            "E2E-TC-1.txt"});
+                            "E2E-TC-1-UPDATED.txt"});
 #line 49
-    await testRunner.ThenAsync("the replica folder contains the following files:", ((string)(null)), table10, "Then ");
+     await testRunner.ThenAsync("the replica folder contains the following files:", ((string)(null)), table10, "Then ");
 #line hidden
                 global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
                             "file"});
                 table11.AddRow(new string[] {
-                            "obsolete-file.txt"});
+                            "E2E-TC-1.txt"});
 #line 52
-    await testRunner.AndAsync("the replica folder does not contain the following files:", ((string)(null)), table11, "And ");
+     await testRunner.AndAsync("the replica folder does not contain the following files:", ((string)(null)), table11, "And ");
 #line hidden
-                global::Reqnroll.Table table12 = new global::Reqnroll.Table(new string[] {
-                            "folder"});
-                table12.AddRow(new string[] {
-                            "obsolete-folder"});
 #line 55
-    await testRunner.AndAsync("the replica folder does not contain the following folders:", ((string)(null)), table12, "And ");
-#line hidden
-#line 58
     await testRunner.AndAsync("the log file is generated and is not empty", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -283,16 +279,16 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
         }
         
         [global::NUnit.Framework.TestAttribute()]
-        [global::NUnit.Framework.DescriptionAttribute("Synchronization should be performed periodically")]
-        public async global::System.Threading.Tasks.Task SynchronizationShouldBePerformedPeriodically()
+        [global::NUnit.Framework.DescriptionAttribute("Obsolete files and folders are removed from replica")]
+        public async global::System.Threading.Tasks.Task ObsoleteFilesAndFoldersAreRemovedFromReplica()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Synchronization should be performed periodically", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Obsolete files and folders are removed from replica", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 60
+#line 57
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -302,57 +298,120 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 61
-     await testRunner.GivenAsync("a source folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line 58
+    await testRunner.GivenAsync("a source folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+                global::Reqnroll.Table table12 = new global::Reqnroll.Table(new string[] {
+                            "file"});
+                table12.AddRow(new string[] {
+                            "E2E-TC-1.txt"});
+#line 59
+    await testRunner.AndAsync("the source folder contains the following files:", ((string)(null)), table12, "And ");
+#line hidden
+#line 62
+    await testRunner.AndAsync("an empty replica folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
                 global::Reqnroll.Table table13 = new global::Reqnroll.Table(new string[] {
                             "file"});
                 table13.AddRow(new string[] {
-                            "E2E-TC-1.txt"});
-#line 62
-     await testRunner.AndAsync("the source folder contains the following files:", ((string)(null)), table13, "And ");
-#line hidden
-#line 65
-     await testRunner.AndAsync("an empty replica folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 66
-     await testRunner.WhenAsync("I run the folder synchronizer with sync interval 3 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+                            "obsolete-file.txt"});
+#line 63
+    await testRunner.AndAsync("the replica folder contains the following files:", ((string)(null)), table13, "And ");
 #line hidden
                 global::Reqnroll.Table table14 = new global::Reqnroll.Table(new string[] {
-                            "file"});
+                            "folder"});
                 table14.AddRow(new string[] {
-                            "E2E-TC-1.txt"});
-#line 67
-     await testRunner.ThenAsync("the replica folder contains the following files:", ((string)(null)), table14, "Then ");
+                            "obsolete-folder"});
+                table14.AddRow(new string[] {
+                            "obsolete-folder/nested"});
+#line 66
+    await testRunner.AndAsync("the replica folder contains the following folders:", ((string)(null)), table14, "And ");
+#line hidden
+#line 70
+    await testRunner.WhenAsync("I run the folder synchronizer", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
                 global::Reqnroll.Table table15 = new global::Reqnroll.Table(new string[] {
-                            "original",
-                            "new"});
+                            "file"});
                 table15.AddRow(new string[] {
-                            "E2E-TC-1.txt",
-                            "E2E-TC-1-UPDATED.txt"});
-#line 70
-     await testRunner.WhenAsync("I rename the following files in the source folder:", ((string)(null)), table15, "When ");
-#line hidden
-#line 73
-     await testRunner.AndAsync("I wait 3 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+                            "E2E-TC-1.txt"});
+#line 71
+    await testRunner.ThenAsync("the replica folder contains the following files:", ((string)(null)), table15, "Then ");
 #line hidden
                 global::Reqnroll.Table table16 = new global::Reqnroll.Table(new string[] {
                             "file"});
                 table16.AddRow(new string[] {
-                            "E2E-TC-1-UPDATED.txt"});
+                            "obsolete-file.txt"});
 #line 74
-     await testRunner.ThenAsync("the replica folder contains the following files:", ((string)(null)), table16, "Then ");
+    await testRunner.AndAsync("the replica folder does not contain the following files:", ((string)(null)), table16, "And ");
 #line hidden
                 global::Reqnroll.Table table17 = new global::Reqnroll.Table(new string[] {
-                            "file"});
+                            "folder"});
                 table17.AddRow(new string[] {
-                            "E2E-TC-1.txt"});
+                            "obsolete-folder"});
 #line 77
-     await testRunner.AndAsync("the replica folder does not contain the following files:", ((string)(null)), table17, "And ");
+    await testRunner.AndAsync("the replica folder does not contain the following folders:", ((string)(null)), table17, "And ");
 #line hidden
 #line 80
     await testRunner.AndAsync("the log file is generated and is not empty", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::NUnit.Framework.TestAttribute()]
+        [global::NUnit.Framework.DescriptionAttribute("Changed file content is synchronized to replica")]
+        public async global::System.Threading.Tasks.Task ChangedFileContentIsSynchronizedToReplica()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "3";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Changed file content is synchronized to replica", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 82
+this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 83
+  await testRunner.GivenAsync("a source folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+                global::Reqnroll.Table table18 = new global::Reqnroll.Table(new string[] {
+                            "file"});
+                table18.AddRow(new string[] {
+                            "E2E-TC-1.txt"});
+#line 84
+  await testRunner.AndAsync("the source folder contains the following files:", ((string)(null)), table18, "And ");
+#line hidden
+#line 87
+  await testRunner.AndAsync("an empty replica folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 88
+  await testRunner.WhenAsync("I run the folder synchronizer with sync interval 1 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+                global::Reqnroll.Table table19 = new global::Reqnroll.Table(new string[] {
+                            "file"});
+                table19.AddRow(new string[] {
+                            "E2E-TC-1.txt"});
+#line 89
+  await testRunner.ThenAsync("the replica folder contains the following files:", ((string)(null)), table19, "Then ");
+#line hidden
+                global::Reqnroll.Table table20 = new global::Reqnroll.Table(new string[] {
+                            "file",
+                            "New file content"});
+                table20.AddRow(new string[] {
+                            "E2E-TC-1.txt",
+                            "This is updated test file content 123!@#"});
+#line 92
+  await testRunner.WhenAsync("I change the content of the following file in the source folder:", ((string)(null)), table20, "When ");
+#line hidden
+#line 95
+  await testRunner.ThenAsync("the content of the file \"E2E-TC-1.txt\" in the replica should be:", "This is updated test file content 123!@#", ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

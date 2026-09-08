@@ -32,6 +32,28 @@ Feature: Folder synchronization
 		| E2E-TC-1.csv |
 	And the log file is generated and is not empty
 
+Scenario: Synchronization should be performed periodically
+     Given a source folder
+     And the source folder contains the following files:
+        | file         |
+        | E2E-TC-1.txt |
+     And an empty replica folder
+     When I run the folder synchronizer with sync interval 3 seconds
+     Then the replica folder contains the following files:
+        | file          |
+        | E2E-TC-1.txt  |
+     When I rename the following files in the source folder:
+        | original      | new                   |
+        | E2E-TC-1.txt  | E2E-TC-1-UPDATED.txt  |
+     And I wait 3 seconds
+     Then the replica folder contains the following files:
+        | file                  |
+        | E2E-TC-1-UPDATED.txt  |
+     And the replica folder does not contain the following files:
+        | file         |
+        | E2E-TC-1.txt |
+    And the log file is generated and is not empty
+
 Scenario: Obsolete files and folders are removed from replica
     Given a source folder
     And the source folder contains the following files:
@@ -55,26 +77,22 @@ Scenario: Obsolete files and folders are removed from replica
     And the replica folder does not contain the following folders:
         | folder          |
         | obsolete-folder |
-    And the log file is generated and is not empty
-
-Scenario: Synchronization should be performed periodically
-     Given a source folder
-     And the source folder contains the following files:
-        | file         |
-        | E2E-TC-1.txt |
-     And an empty replica folder
-     When I run the folder synchronizer with sync interval 3 seconds
-     Then the replica folder contains the following files:
-        | file          |
-        | E2E-TC-1.txt  |
-     When I rename the following files in the source folder:
-        | original      | new                   |
-        | E2E-TC-1.txt  | E2E-TC-1-UPDATED.txt  |
-     And I wait 3 seconds
-     Then the replica folder contains the following files:
-        | file                  |
-        | E2E-TC-1-UPDATED.txt  |
-     And the replica folder does not contain the following files:
-        | file         |
-        | E2E-TC-1.txt |
-    And the log file is generated and is not empty
+    And the log file is generated and is not empty    
+    
+Scenario: Changed file content is synchronized to replica
+  Given a source folder
+  And the source folder contains the following files:
+    | file         |
+    | E2E-TC-1.txt |
+  And an empty replica folder
+  When I run the folder synchronizer with sync interval 1 seconds
+  Then the replica folder contains the following files:
+      | file            |
+      | E2E-TC-1.txt    |
+  When I change the content of the following file in the source folder:
+    | file         | New file content                           |
+    | E2E-TC-1.txt | This is updated test file content 123!@#   |
+  Then the content of the file "E2E-TC-1.txt" in the replica should be:
+	"""
+	This is updated test file content 123!@#
+	"""

@@ -110,6 +110,16 @@ namespace FolderSynchronizer.E2ETests.Steps
             }
         }
 
+        [Then("the content of the file {string} in the replica should be:")]
+        public async Task ThenTheContentOfTheFileInTheReplicaShouldBe(string fileName, string expectedContent)
+        {
+            var filePath = Path.Combine(_scenarioState.ReplicaFolder, fileName);
+
+            Assert.That(await WaitForFileContentAsync(filePath, expectedContent, WaitTimeOut),
+                Is.True,
+                $"File '{fileName}' in replica does not contain the expected content.");
+        }
+
         private async Task<bool> WaitForFileAsync(string filePath, TimeSpan timeout)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -170,6 +180,28 @@ namespace FolderSynchronizer.E2ETests.Steps
                 if (!Directory.Exists(directory))
                 {
                     return true;
+                }
+
+                await Task.Delay(100);
+            }
+
+            return false;
+        }
+
+        private async Task<bool> WaitForFileContentAsync(string filePath, string expectedContent, TimeSpan timeout)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                if (File.Exists(filePath))
+                {
+                    var actualContent = await File.ReadAllTextAsync(filePath);
+
+                    if (actualContent == expectedContent)
+                    {
+                        return true;
+                    }
                 }
 
                 await Task.Delay(100);
