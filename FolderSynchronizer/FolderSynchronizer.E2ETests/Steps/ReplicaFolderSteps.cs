@@ -21,8 +21,28 @@ namespace FolderSynchronizer.E2ETests.Steps
             _scenarioState.ReplicaFolder = replicaFolder.FullName;
         }
 
+        [Given("the replica folder contains the following files:")]
+        public void GivenTheReplicaFolderContainsTheFollowingFiles(DataTable dataTable)
+        {
+            foreach (var row in dataTable.Rows)
+            {
+                var fileName = row["file"];
+
+                var assetPath = Path.Combine(AppContext.BaseDirectory, _scenarioState.TestAssetsFolder, fileName);
+
+                if (!File.Exists(assetPath))
+                {
+                    throw new FileNotFoundException($"Test asset not found: {assetPath}");
+                }
+
+                var destinationPath = Path.Combine(_scenarioState.ReplicaFolder, fileName);
+
+                File.Copy(assetPath, destinationPath);
+            }
+        }
+
         [Then("the replica folder contains the following files:")]
-        public void ThenTheSourceFolderContainsTheFollowingFiles(DataTable dataTable)
+        public async Task ThenTheSourceFolderContainsTheFollowingFiles(DataTable dataTable)
         {
             foreach (var row in dataTable.Rows)
             {
@@ -30,12 +50,12 @@ namespace FolderSynchronizer.E2ETests.Steps
 
                 var filePath = Path.Combine(_scenarioState.ReplicaFolder, relativeFilePath);
 
-                Assert.That(WaitForFile(filePath, WaitTimeOut), Is.True, $"Expected file was not found in replica folder: {relativeFilePath}");
+                Assert.That(await WaitForFileAsync(filePath, WaitTimeOut), Is.True, $"Expected file was not found in replica folder: {relativeFilePath}");
             }
         }
 
         [Then("the replica folder does not contain the following files:")]
-        public void ThenTheReplicaFolderDoesNotContainTheFollowingFiles(DataTable dataTable)
+        public async Task ThenTheReplicaFolderDoesNotContainTheFollowingFiles(DataTable dataTable)
         {
             foreach (var row in dataTable.Rows)
             {
@@ -43,12 +63,12 @@ namespace FolderSynchronizer.E2ETests.Steps
 
                 var filePath = Path.Combine(_scenarioState.ReplicaFolder, relativeFilePath);
 
-                Assert.That(WaitForFile(filePath, WaitTimeOut), Is.False, $"Unexpected file was found in replica folder: {relativeFilePath}");
+                Assert.That(await WaitForFileDisappearAsync(filePath, WaitTimeOut), Is.True, $"Unexpected file was found in replica folder: {relativeFilePath}");
             }
         }
 
         [Then("the replica folder contains the following folders:")]
-        public void ThenTheReplicaFolderContainsTheFollowingFolders(DataTable dataTable)
+        public async Task ThenTheReplicaFolderContainsTheFollowingFolders(DataTable dataTable)
         {
             foreach (var row in dataTable.Rows)
             {
@@ -56,12 +76,25 @@ namespace FolderSynchronizer.E2ETests.Steps
 
                 var folderPath = Path.Combine(_scenarioState.ReplicaFolder, relativeFolderPath);
 
-                Assert.That(WaitForDirectory(folderPath, WaitTimeOut), Is.True, $"Expected folder was not found in replica: {relativeFolderPath}");
+                Assert.That(await WaitForDirectoryAsync(folderPath, WaitTimeOut), Is.True, $"Expected folder was not found in replica: {relativeFolderPath}");
+            }
+        }
+
+        [Then("the replica folder does not contain the following folders:")]
+        public async Task ThenTheReplicaFolderDoesNotContainTheFollowingFolders(DataTable dataTable)
+        {
+            foreach (var row in dataTable.Rows)
+            {
+                var relativeFolderPath = row["folder"];
+
+                var folderPath = Path.Combine(_scenarioState.ReplicaFolder, relativeFolderPath);
+
+                Assert.That(await WaitForDirectoryDisapearAsync(folderPath, WaitTimeOut), Is.True, $"Unxpected folder was found in replica: {relativeFolderPath}");
             }
         }
 
         [Then("the folder {string} in the replica contains the following files:")]
-        public void ThenTheFolderInTheReplicaContainsTheFollowingFiles(string relativeFolderPath, DataTable dataTable)
+        public async Task ThenTheFolderInTheReplicaContainsTheFollowingFiles(string relativeFolderPath, DataTable dataTable)
         {
             var replicaFolder = Path.Combine(_scenarioState.ReplicaFolder, relativeFolderPath);
 
@@ -73,11 +106,21 @@ namespace FolderSynchronizer.E2ETests.Steps
 
                 var filePath = Path.Combine(replicaFolder, fileName);
 
-                Assert.That(WaitForFile(filePath, WaitTimeOut), Is.True, $"Expected file was not found in replica folder '{relativeFolderPath}': {fileName}");
+                Assert.That(await WaitForFileAsync(filePath, WaitTimeOut), Is.True, $"Expected file was not found in replica folder '{relativeFolderPath}': {fileName}");
             }
         }
 
-        private bool WaitForFile(string filePath, TimeSpan timeout)
+        [Then("the content of the file {string} in the replica should be:")]
+        public async Task ThenTheContentOfTheFileInTheReplicaShouldBe(string fileName, string expectedContent)
+        {
+            var filePath = Path.Combine(_scenarioState.ReplicaFolder, fileName);
+
+            Assert.That(await WaitForFileContentAsync(filePath, expectedContent, WaitTimeOut),
+                Is.True,
+                $"File '{fileName}' in replica does not contain the expected content.");
+        }
+
+        private async Task<bool> WaitForFileAsync(string filePath, TimeSpan timeout)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -88,13 +131,30 @@ namespace FolderSynchronizer.E2ETests.Steps
                     return true;
                 }
 
-                Thread.Sleep(100);
+                await Task.Delay(100);
             }
 
             return false;
         }
 
-        private bool WaitForDirectory(string directory, TimeSpan timeout)
+        private async Task<bool> WaitForFileDisappearAsync(string filePath, TimeSpan timeout)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                if (!File.Exists(filePath))
+                {
+                    return true;
+                }
+
+                await Task.Delay(100);
+            }
+
+            return false;
+        }
+
+        private async Task<bool> WaitForDirectoryAsync(string directory, TimeSpan timeout)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -105,7 +165,46 @@ namespace FolderSynchronizer.E2ETests.Steps
                     return true;
                 }
 
-                Thread.Sleep(100);
+                await Task.Delay(100);
+            }
+
+            return false;
+        }
+
+        private async Task<bool> WaitForDirectoryDisapearAsync(string directory, TimeSpan timeout)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                if (!Directory.Exists(directory))
+                {
+                    return true;
+                }
+
+                await Task.Delay(100);
+            }
+
+            return false;
+        }
+
+        private async Task<bool> WaitForFileContentAsync(string filePath, string expectedContent, TimeSpan timeout)
+        {
+            var stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                if (File.Exists(filePath))
+                {
+                    var actualContent = await File.ReadAllTextAsync(filePath);
+
+                    if (actualContent == expectedContent)
+                    {
+                        return true;
+                    }
+                }
+
+                await Task.Delay(100);
             }
 
             return false;

@@ -4,6 +4,8 @@ namespace FolderSynchronizer.E2ETests
 {
     public class ScenarioState
     {
+        public string TestAssetsFolder { get; } = "TestAssets";
+
         public string SourceFolder { get; set; } = null!;
         public string ReplicaFolder { get; set; } = null!;
 
