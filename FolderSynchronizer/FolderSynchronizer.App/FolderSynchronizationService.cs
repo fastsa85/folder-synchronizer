@@ -18,7 +18,11 @@ namespace FolderSynchronizer.App
 
         private void SynchronizeDirectoryRecursively(string sourceFolder, string replicaFolder)
         {
-            Directory.CreateDirectory(replicaFolder);
+            if (!Directory.Exists(replicaFolder))
+            {
+                Directory.CreateDirectory(replicaFolder);
+                _logger.LogInformation("Created directory in replica folder: {replicaFolder}", replicaFolder);
+            }           
 
             foreach (var file in Directory.GetFiles(sourceFolder))
             {
