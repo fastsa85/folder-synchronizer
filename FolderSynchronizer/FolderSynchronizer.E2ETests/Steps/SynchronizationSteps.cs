@@ -36,7 +36,7 @@ namespace FolderSynchronizer.E2ETests.Steps
         public async Task WhenIWaitSeconds(int seconds)
         {
             await Task.Delay(seconds * 1000);
-        }
+        }      
 
         private void StartSynchronizer(int syncInterval)
         {
@@ -61,12 +61,21 @@ namespace FolderSynchronizer.E2ETests.Steps
                 CreateNoWindow = true
             };
 
-            var process = Process.Start(processStartInfo)
-                ?? throw new InvalidOperationException(
-                    "Failed to start FolderSynchronizer.");
+            var process = Process.Start(processStartInfo) ?? throw new InvalidOperationException("Failed to start FolderSynchronizer.");
+
+            process.OutputDataReceived += (_, e) =>
+            {
+                if (e.Data is not null)
+                {
+                    _scenarioState.StandardOutput += e.Data + Environment.NewLine;
+                }
+            };
+
+            process.BeginOutputReadLine();
 
             _scenarioState.SynchronizerProcess = process;
             _scenarioState.LogFilePath = logFilePath;
+            _scenarioState.SyncInterval = syncInterval;
         }
     }
 }
