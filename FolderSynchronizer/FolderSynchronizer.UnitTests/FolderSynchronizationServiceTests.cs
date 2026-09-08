@@ -172,5 +172,28 @@ namespace FolderSynchronizer.UnitTests
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
+        [Test]
+        public void Synchronize_WhenReplicaDirectoryDoesNotExist_LogsDirectoryCreation()
+        {
+            // Arrange
+            var sourceFolder = Path.Combine(_sourceFolder, "nested");
+            Directory.CreateDirectory(sourceFolder);
+
+            // Act
+            _folderSynchronizatioService.Synchronize(_sourceFolder, _replicaFolder);
+
+            // Assert
+            _loggerMock.Verify(
+                logger => logger.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>(
+                        (state, _) =>
+                            state.ToString()!.Contains("Created directory in replica folder")),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
     }
 }
