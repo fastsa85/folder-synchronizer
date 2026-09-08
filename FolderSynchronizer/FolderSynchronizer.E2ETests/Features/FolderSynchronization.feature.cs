@@ -33,8 +33,8 @@ AC-1: Synchronization must be one-way: after the synchronization content of the 
 folder should be modified to exactly match content of the source folder;
 
 AC-2: Synchronization should be performed periodically;
-AC-3: File creation/copying/removal operations should be logged to a file and to the
-console output;
+AC-3-1: File creation/copying/removal operations should be logged to a file 
+AC-3-2 File creation/copying/removal operations should be logged to the console output;
 AC-4: Folder paths, synchronization interval and log file path should be provided using
 the command line arguments;", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
@@ -120,13 +120,13 @@ the command line arguments;", global::Reqnroll.ProgrammingLanguage.CSharp, featu
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("Initial synchronization copies source contents to replica")]
         [global::NUnit.Framework.CategoryAttribute("AC-1")]
-        [global::NUnit.Framework.CategoryAttribute("AC-3")]
+        [global::NUnit.Framework.CategoryAttribute("AC-3-1")]
         [global::NUnit.Framework.CategoryAttribute("AC-4")]
         public async global::System.Threading.Tasks.Task InitialSynchronizationCopiesSourceContentsToReplica()
         {
             string[] tagsOfScenario = new string[] {
                     "AC-1",
-                    "AC-3",
+                    "AC-3-1",
                     "AC-4"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
@@ -221,14 +221,14 @@ the command line arguments;", global::Reqnroll.ProgrammingLanguage.CSharp, featu
         [global::NUnit.Framework.DescriptionAttribute("Synchronization should be performed periodically")]
         [global::NUnit.Framework.CategoryAttribute("AC-1")]
         [global::NUnit.Framework.CategoryAttribute("AC-2")]
-        [global::NUnit.Framework.CategoryAttribute("AC-3")]
+        [global::NUnit.Framework.CategoryAttribute("AC-3-1")]
         [global::NUnit.Framework.CategoryAttribute("AC-4")]
         public async global::System.Threading.Tasks.Task SynchronizationShouldBePerformedPeriodically()
         {
             string[] tagsOfScenario = new string[] {
                     "AC-1",
                     "AC-2",
-                    "AC-3",
+                    "AC-3-1",
                     "AC-4"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
@@ -304,13 +304,13 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("Obsolete files and folders are removed from replica")]
         [global::NUnit.Framework.CategoryAttribute("AC-1")]
-        [global::NUnit.Framework.CategoryAttribute("AC-3")]
+        [global::NUnit.Framework.CategoryAttribute("AC-3-1")]
         [global::NUnit.Framework.CategoryAttribute("AC-4")]
         public async global::System.Threading.Tasks.Task ObsoleteFilesAndFoldersAreRemovedFromReplica()
         {
             string[] tagsOfScenario = new string[] {
                     "AC-1",
-                    "AC-3",
+                    "AC-3-1",
                     "AC-4"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
@@ -390,13 +390,13 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("Changed file content is synchronized to replica")]
         [global::NUnit.Framework.CategoryAttribute("AC-1")]
-        [global::NUnit.Framework.CategoryAttribute("AC-3")]
+        [global::NUnit.Framework.CategoryAttribute("AC-3-1")]
         [global::NUnit.Framework.CategoryAttribute("AC-4")]
         public async global::System.Threading.Tasks.Task ChangedFileContentIsSynchronizedToReplica()
         {
             string[] tagsOfScenario = new string[] {
                     "AC-1",
-                    "AC-3",
+                    "AC-3-1",
                     "AC-4"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "3";
@@ -454,15 +454,17 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
         
         [global::NUnit.Framework.TestAttribute()]
         [global::NUnit.Framework.DescriptionAttribute("Synchronization events are logged to the console")]
+        [global::NUnit.Framework.CategoryAttribute("AC-3-2")]
         public async global::System.Threading.Tasks.Task SynchronizationEventsAreLoggedToTheConsole()
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = new string[] {
+                    "AC-3-2"};
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "4";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Synchronization events are logged to the console", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 124
+#line 125
 this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -472,41 +474,41 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
             else
             {
                 await this.ScenarioStartAsync();
-#line 125
+#line 126
   await testRunner.GivenAsync("a source folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
                 global::Reqnroll.Table table21 = new global::Reqnroll.Table(new string[] {
                             "file"});
                 table21.AddRow(new string[] {
                             "E2E-TC-1.txt"});
-#line 126
+#line 127
   await testRunner.AndAsync("the source folder contains the following files:", ((string)(null)), table21, "And ");
 #line hidden
                 global::Reqnroll.Table table22 = new global::Reqnroll.Table(new string[] {
                             "folder"});
                 table22.AddRow(new string[] {
                             "empty-folder"});
-#line 129
+#line 130
   await testRunner.AndAsync("the source folder contains the following folders:", ((string)(null)), table22, "And ");
 #line hidden
-#line 132
+#line 133
   await testRunner.AndAsync("an empty replica folder", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
                 global::Reqnroll.Table table23 = new global::Reqnroll.Table(new string[] {
                             "folder"});
                 table23.AddRow(new string[] {
                             "obsolete-folder"});
-#line 133
+#line 134
   await testRunner.AndAsync("the replica folder contains the following folders:", ((string)(null)), table23, "And ");
 #line hidden
                 global::Reqnroll.Table table24 = new global::Reqnroll.Table(new string[] {
                             "file"});
                 table24.AddRow(new string[] {
                             "obsolete-file.txt"});
-#line 136
+#line 137
   await testRunner.AndAsync("the replica folder contains the following files:", ((string)(null)), table24, "And ");
 #line hidden
-#line 139
+#line 140
   await testRunner.WhenAsync("I run the folder synchronizer", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
                 global::Reqnroll.Table table25 = new global::Reqnroll.Table(new string[] {
@@ -524,7 +526,7 @@ this.ScenarioInitialize(scenarioInfo, ruleInfo);
                 table25.AddRow(new string[] {
                             "Removed obsolete file",
                             "obsolete-file.txt"});
-#line 141
+#line 142
   await testRunner.ThenAsync("the console output contains the following messages:", ((string)(null)), table25, "Then ");
 #line hidden
             }
