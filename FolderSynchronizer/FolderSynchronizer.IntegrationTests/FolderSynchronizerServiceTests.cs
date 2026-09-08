@@ -346,6 +346,8 @@ namespace FolderSynchronizer.IntegrationTests
                 var replicaFile = Path.Combine(replicaFolder.FullName, fileName);
                 File.WriteAllText(replicaFile, replicaFileContent);
 
+                File.SetLastWriteTimeUtc(replicaFile, File.GetLastWriteTimeUtc(sourceFile).AddSeconds(-1));
+
                 // Act: run the synchronization
                 folderSynchronizerService.Synchronize(sourceFolder.FullName, replicaFolder.FullName);
 
