@@ -147,5 +147,30 @@ namespace FolderSynchronizer.UnitTests
             Times.Once);
 
         }
+
+        [Test]
+        public void Synchronize_ShouldNotCopyUnchangedFile()
+        {
+            // Arrange
+            var sourceFile = Path.Combine(_sourceFolder, "test.txt");
+            File.WriteAllText(sourceFile, "test content");
+
+            _folderSynchronizatioService.Synchronize(_sourceFolder, _replicaFolder); // ! first sync to copy the file
+
+            // Act
+            _folderSynchronizatioService.Synchronize(_sourceFolder, _replicaFolder); // ! should not copy the file is unchanged
+
+            // Assert
+            _loggerMock.Verify(
+                logger => logger.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>(
+                        (state, _) =>
+                            state.ToString()!.Contains("Copied file")),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
     }
 }

@@ -31,8 +31,19 @@ namespace FolderSynchronizer.App
                     Directory.CreateDirectory(replicaFileDirectory);
                 }
 
-                File.Copy(file, replicaFile, overwrite: true);
-                _logger.LogInformation("Copied file from source: {sourceFile} to replica: {replicaFile}", file, replicaFile);
+                if (IsCopyFileRequired(file, replicaFile))
+                {
+                    File.Copy(file, replicaFile, overwrite: true);
+
+                    File.SetLastWriteTimeUtc(
+                        replicaFile,
+                        File.GetLastWriteTimeUtc(file));
+
+                    _logger.LogInformation(
+                        "Copied file from source: {sourceFile} to replica: {replicaFile}",
+                        file,
+                        replicaFile);
+                }
             }
 
             foreach (var replicaFile in Directory.GetFiles(replicaFolder))
@@ -66,6 +77,19 @@ namespace FolderSynchronizer.App
 
                 SynchronizeDirectoryRecursively(sourceDirectory, replicaDirectory);
             }
+        }
+
+        private bool IsCopyFileRequired(string sourceFile, string replicaFile)
+        {
+            if (!File.Exists(replicaFile))
+            {
+                return true;
+            }
+
+            var sourceFileInfo = new FileInfo(sourceFile);
+            var replicaFileInfo = new FileInfo(replicaFile);
+
+            return sourceFileInfo.LastWriteTimeUtc != replicaFileInfo.LastWriteTimeUtc || sourceFileInfo.Length != replicaFileInfo.Length;
         }
     }
 }
