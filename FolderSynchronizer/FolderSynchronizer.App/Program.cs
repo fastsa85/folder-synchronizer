@@ -15,6 +15,7 @@ namespace FolderSynchronizer.App
 
                 var builder = Host.CreateApplicationBuilder();
 
+                builder.Logging.SetMinimumLevel(LogLevel.Information);
                 builder.Services.AddSingleton(options);
                 builder.Services.AddSingleton<IFolderSynchronizationService, FolderSynchronizationService>();
                 builder.Services.AddHostedService<FolderSynchronizationBackgroundService>();
