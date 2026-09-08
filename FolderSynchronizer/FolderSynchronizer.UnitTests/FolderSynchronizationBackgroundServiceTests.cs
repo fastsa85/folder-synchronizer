@@ -1,15 +1,11 @@
 ﻿using FolderSynchronizer.App;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Timers;
 
 namespace FolderSynchronizer.UnitTests
 {
     [TestFixture]
     public class FolderSynchronizationBackgroundServiceTests
-    {      
+    {
         private const int SYNC_INTERVAL_MS = 100;
         private FolderSynchronizationBackgroundService _backgroundService;
         private Mock<IFolderSynchronizationService> _synchronizationService;
@@ -34,22 +30,26 @@ namespace FolderSynchronizer.UnitTests
         [TearDown]
         public async Task TearDown()
         {
-            await _backgroundService?.StopAsync(CancellationToken.None);
-            _backgroundService?.Dispose();
+            if (_backgroundService != null)
+            {
+                await _backgroundService.StopAsync(CancellationToken.None);
+                _backgroundService.Dispose();
+            }
+
             _cancellationTokenSource?.Dispose();
         }
 
         [Test]
         public async Task ExecuteAsync_ShouldSynchronizeOnStart()
-        { 
+        {
             await _backgroundService.StartAsync(_cancellationTokenSource.Token);
-             _synchronizationService.Verify(x => x.Synchronize("source", "replica"), Times.Once);
+            _synchronizationService.Verify(x => x.Synchronize("source", "replica"), Times.Once);
         }
 
         [Test]
         public async Task ExecuteAsync_ShouldSynchronizePeriodically()
         {
-           
+
             await _backgroundService.StartAsync(_cancellationTokenSource.Token);
             await Task.Delay(SYNC_INTERVAL_MS * 2 + 50); // 50 ms is a small additional delay to ensure the second synchronization happens
 
@@ -58,7 +58,7 @@ namespace FolderSynchronizer.UnitTests
 
         [Test]
         public async Task StopAsync_ShouldStopTheService()
-        {            
+        {
             await _backgroundService.StartAsync(_cancellationTokenSource.Token);
             _cancellationTokenSource.Cancel();
 

@@ -4,7 +4,6 @@ namespace FolderSynchronizer.App.Logging
 {
     public class FileLoggerProvider : ILoggerProvider
     {
-        private readonly string _logFilePath;
         private readonly StreamWriter _writer;
 
         public FileLoggerProvider(string logFilePath)

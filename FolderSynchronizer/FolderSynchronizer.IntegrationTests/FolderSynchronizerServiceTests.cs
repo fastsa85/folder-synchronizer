@@ -1,7 +1,7 @@
 ﻿using FolderSynchronizer.App;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework.Internal;
-using Microsoft.Extensions.Logging;
 
 namespace FolderSynchronizer.IntegrationTests
 {
