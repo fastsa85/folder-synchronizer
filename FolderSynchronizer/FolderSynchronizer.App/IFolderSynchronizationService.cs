@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FolderSynchronizer.App
+﻿namespace FolderSynchronizer.App
 {
     public interface IFolderSynchronizationService
     {

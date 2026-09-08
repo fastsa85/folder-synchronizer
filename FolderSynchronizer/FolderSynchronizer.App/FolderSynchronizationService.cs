@@ -70,7 +70,7 @@ namespace FolderSynchronizer.App
                 var replicaFile = Path.Combine(replicaFolder, sourceFileRelativePath);
                 var replicaFileDirectory = Path.GetDirectoryName(replicaFile);
 
-                if (!Directory.Exists(replicaFileDirectory))
+                if (replicaFileDirectory != null && !Directory.Exists(replicaFileDirectory))
                 {
                     Directory.CreateDirectory(replicaFileDirectory);
                 }

@@ -1,7 +1,4 @@
 ﻿using Reqnroll;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FolderSynchronizer.E2ETests.Hooks
 {
@@ -30,7 +27,7 @@ namespace FolderSynchronizer.E2ETests.Hooks
                 Directory.Delete(_scenarioState.SourceFolder, recursive: true);
             }
 
-            if (!string.IsNullOrEmpty(_scenarioState.ReplicaFolder) &&  Directory.Exists(_scenarioState.ReplicaFolder))
+            if (!string.IsNullOrEmpty(_scenarioState.ReplicaFolder) && Directory.Exists(_scenarioState.ReplicaFolder))
             {
                 Directory.Delete(_scenarioState.ReplicaFolder, recursive: true);
             }
@@ -57,7 +54,7 @@ namespace FolderSynchronizer.E2ETests.Hooks
             process.WaitForExit();
             process.Dispose();
 
-            _scenarioState.SynchronizerProcess = null;
+            _scenarioState.SynchronizerProcess = null!;
         }
     }
 }
