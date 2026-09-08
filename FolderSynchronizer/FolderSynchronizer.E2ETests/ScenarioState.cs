@@ -11,12 +11,10 @@ namespace FolderSynchronizer.E2ETests
 
         public string LogFilePath { get; set; } = null!;
 
-        public int ExitCode { get; set; }
-
         public string StandardOutput { get; set; } = string.Empty;
 
-        public string StandardError { get; set; } = string.Empty;
-
         public Process SynchronizerProcess { get; set; } = null!;
+
+        public int SyncInterval { get; set; }
     }
 }
