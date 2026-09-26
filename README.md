@@ -21,7 +21,7 @@ FolderSynchronizer <source> <replica> <intervalSeconds> <logFile>
 The solution uses a testing pyramid strategy:
 
  - Unit tests — synchronization logic and logging behavior
- - Integration tests — filesystem integration file logging
+ - Integration tests — filesystem integration and file logging
  - E2E tests — real application process, CLI arguments, periodic synchronization, file changes and cleanup
 
 ## Assumptions and Limitations
