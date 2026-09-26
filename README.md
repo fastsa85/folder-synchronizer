@@ -10,8 +10,8 @@ FolderSynchronizer <source> <replica> <intervalSeconds> <logFile>
 ## Features
 
 - The replica is kept identical to the source:
-New and changed files are copied
-Obsolete files and directories are removed
+- New and changed files are copied
+- Obsolete files and directories are removed
 
 - Synchronization runs periodically
 - Logs are written to both console and file
@@ -20,9 +20,9 @@ Obsolete files and directories are removed
 
 The solution uses a testing pyramid strategy:
 
-Unit tests — synchronization logic and logging behavior
-Integration tests — filesystem integration file logging
-E2E tests — real application process, CLI arguments, periodic synchronization, file changes and cleanup
+ - Unit tests — synchronization logic and logging behavior
+ - Integration tests — filesystem integration file logging
+ - E2E tests — real application process, CLI arguments, periodic synchronization, file changes and cleanup
 
 ## Assumptions and Limitations
 - Synchronization is one-way only from source to replica
