@@ -56,8 +56,15 @@ namespace FolderSynchronizer.App
 
                 if (!File.Exists(sourceFile))
                 {
-                    File.Delete(replicaFile);
-                    _logger.LogInformation("Removed obsolete file in replica folder: {replicaFile}", replicaFile);
+                    try
+                    {
+                        File.Delete(replicaFile);
+                        _logger.LogInformation("Removed obsolete file in replica folder: {replicaFile}", replicaFile);
+                    }
+                    catch (IOException ex)
+                    {
+                        _logger.LogWarning(ex, "Could not remove file from replica because it is unavailable: {replicaFile}", replicaFile);
+                    }
                 }
             }
         }
@@ -77,16 +84,25 @@ namespace FolderSynchronizer.App
 
                 if (IsCopyFileRequired(file, replicaFile))
                 {
-                    File.Copy(file, replicaFile, overwrite: true);
+                    try
+                    {
+                        File.Copy(file, replicaFile, overwrite: true);
 
-                    File.SetLastWriteTimeUtc(
-                        replicaFile,
-                        File.GetLastWriteTimeUtc(file));
+                        File.SetLastWriteTimeUtc(
+                            replicaFile,
+                            File.GetLastWriteTimeUtc(file));
 
-                    _logger.LogInformation(
-                        "Copied file from source: {sourceFile} to replica: {replicaFile}",
+                        _logger.LogInformation(
+                            "Copied file from source: {sourceFile} to replica: {replicaFile}",
+                            file,
+                            replicaFile);
+                    }
+                    catch (IOException ex)
+                    {
+                        _logger.LogWarning(ex, "Could not copy file from source: {sourceFile} to replica: {replicaFile}. File is unavailable",
                         file,
                         replicaFile);
+                    }
                 }
             }
         }
