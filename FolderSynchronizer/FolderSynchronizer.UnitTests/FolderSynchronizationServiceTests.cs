@@ -195,5 +195,85 @@ namespace FolderSynchronizer.UnitTests
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
         }
+
+        [Test]
+        public void Synchronize_WhenSourceFileIsLocked_ShouldLogWarningAndContinueSynchronization()
+        {
+            // Arrange
+            var lockedFileName = "locked.txt";
+            var lockedSourceFile = Path.Combine(_sourceFolder, lockedFileName);
+            File.WriteAllText(lockedSourceFile, "locked content");
+
+            var availableFileName = "available.txt";
+            var availableSourceFile = Path.Combine(_sourceFolder, availableFileName);
+            File.WriteAllText(availableSourceFile, "available content");
+
+            using var lockStream = new FileStream(
+                lockedSourceFile,
+                FileMode.Open,
+                FileAccess.ReadWrite,
+                FileShare.None);
+
+            // Act
+            Assert.DoesNotThrow(() => _folderSynchronizatioService.Synchronize(_sourceFolder, _replicaFolder));
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(File.Exists(Path.Combine(_replicaFolder, lockedFileName)), Is.False);
+                Assert.That(File.Exists(Path.Combine(_replicaFolder, availableFileName)), Is.True);
+            });
+
+            _loggerMock.Verify(
+                logger => logger.Log(
+                    LogLevel.Warning,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((state, _) =>
+                        state.ToString()!.Contains("Could not copy file from source") &&
+                        state.ToString()!.Contains(lockedFileName)),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
+
+        [Test]
+        public void Synchronize_WhenObsoleteReplicaFileIsLocked_ShouldLogWarningAndContinueSynchronization()
+        {
+            // Arrange
+            var lockedFileName = "locked.txt";
+            var lockedReplicaFile = Path.Combine(_replicaFolder, lockedFileName);
+            File.WriteAllText(lockedReplicaFile, "locked content");
+
+            var obsoleteFileName = "obsolete.txt";
+            var obsoleteReplicaFile = Path.Combine(_replicaFolder, obsoleteFileName);
+            File.WriteAllText(obsoleteReplicaFile, "obsolete content");
+
+            using var lockStream = new FileStream(
+                lockedReplicaFile,
+                FileMode.Open,
+                FileAccess.ReadWrite,
+                FileShare.None);
+
+            // Act
+            Assert.DoesNotThrow(() => _folderSynchronizatioService.Synchronize(_sourceFolder, _replicaFolder));
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(File.Exists(lockedReplicaFile), Is.True);
+                Assert.That(File.Exists(obsoleteReplicaFile), Is.False);
+            });
+
+            _loggerMock.Verify(
+                logger => logger.Log(
+                    LogLevel.Warning,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((state, _) =>
+                        state.ToString()!.Contains("Could not remove file from replica") &&
+                        state.ToString()!.Contains(lockedFileName)),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.Once);
+        }
     }
 }
